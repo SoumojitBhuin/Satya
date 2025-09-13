@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Scam - Satya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #212529;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e9ecef;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #007BFF;
+            text-decoration: none;
+            background: linear-gradient(135deg, #007BFF, #0056CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: #6c757d;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #007BFF;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #212529, #495057);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Styles */
+        .report-form {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .required {
+            color: #DC3545;
+        }
+
+        .form-help {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #DC3545, #C82333);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #28A745, #20873A);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-credit {
+            color: #6c757d;
+        }
+
+        .footer-credit a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            color: #6c757d;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #007BFF;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            main {
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .report-form {
+                padding: 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">Satya</a>
+            <a href="/" class="nav-link">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1 class="page-title">Report Scam Content</h1>
+            <p class="page-subtitle">Help us build a safer digital community by reporting suspicious content</p>
+        </div>
+
+        <div class="success-message" id="success-message">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Report Submitted Successfully!</h3>
+            <p>Thank you for helping make the internet safer. Your report has been received and will be reviewed by our team.</p>
+        </div>
+
+        <form class="report-form" id="report-form" >
+            <div class="form-group">
+                <label for="scam-type" class="form-label">
+                    Type of Scam <span class="required">*</span>
+                </label>
+                <select id="scam-type" class="form-select" required>
+                    <option value="">Select scam type...</option>
+                    <option value="phishing">Phishing</option>
+                    <option value="fake-lottery">Fake Lottery</option>
+                    <option value="romance-scam">Romance Scam</option>
+                    <option value="tech-support">Tech Support Scam</option>
+                    <option value="investment-fraud">Investment Fraud</option>
+                    <option value="fake-shopping">Fake Shopping Site</option>
+                    <option value="identity-theft">Identity Theft</option>
+                    <option value="fake-charity">Fake Charity</option>
+                    <option value="employment-scam">Employment Scam</option>
+                    <option value="other">Other</option>
+                </select>
+                <div class="form-help">Choose the category that best describes the scam</div>
+            </div>
+
+            <div class="form-group">
+                <label for="platform" class="form-label">
+                    Platform Where Seen <span class="required">*</span>
+                </label>
+                <select id="platform" class="form-select" required>
+                    <option value="">Select platform...</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="email">Email</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="twitter">Twitter/X</option>
+                    <option value="telegram">Telegram</option>
+                    <option value="sms">SMS</option>
+                    <option value="website">Website</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="other">Other</option>
+                </select>
+                <div class="form-help">Where did you encounter this scam?</div>
+            </div>
+
+            <div class="form-group">
+                <label for="content-url" class="form-label">
+                    Content URL or Source
+                </label>
+                <input type="url" id="content-url" class="form-input" placeholder="https://example.com/suspicious-content">
+                <div class="form-help">If available, provide the URL or link to the suspicious content</div>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">
+                    Detailed Description <span class="required">*</span>
+                </label>
+                <textarea id="description" class="form-textarea" placeholder="Describe the scam in detail. What made you suspicious? What claims were made? How were you contacted?" required></textarea>
+                <div class="form-help">Provide as much detail as possible to help our analysis</div>
+            </div>
+
+            <div class="form-group">
+                <label for="additional-info" class="form-label">
+                    Additional Information
+                </label>
+                <textarea id="additional-info" class="form-textarea" placeholder="Any other relevant details, such as phone numbers, email addresses, or specific tactics used...">{{detailed_explanation}}</textarea>
+                <div class="form-help">Include any other relevant information that might help identify patterns</div>
+            </div>
+
+            <div class="form-group">
+                <label for="contact-email" class="form-label">
+                    Your Email (Optional)
+                </label>
+                <input type="email" id="contact-email" class="form-input" placeholder="your.email@example.com">
+                <div class="form-help">Provide your email if you'd like updates on this report</div>
+            </div>
+
+            <button type="submit" class="submit-button" id="submit-button">
+                <i class="fas fa-flag"></i>
+                Submit Report
+            </button>
+        </form>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-credit">
+                Designed & Developed by <a href="#" target="_blank">Your Name</a>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let isSubmitting = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+        });
+
+        function initializeForm() {
+            const form = document.getElementById('report-form');
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            if (isSubmitting) return;
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const formData = collectFormData();
+            setSubmittingState(true);
+
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // In a real application, you would make an API call here:
+                
+                const response = await fetch('/api/report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit report');
+                }
+                
+
+                showSuccessMessage();
+                resetForm();
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                alert('There was an error submitting your report. Please try again.');
+            } finally {
+                setSubmittingState(false);
+            }
+        }
+
+        function validateForm() {
+            const requiredFields = [
+                { id: 'scam-type', name: 'Scam Type' },
+                { id: 'platform', name: 'Platform' },
+                { id: 'description', name: 'Description' }
+            ];
+
+            for (const field of requiredFields) {
+                const element = document.getElementById(field.id);
+                if (!element.value.trim()) {
+                    alert(`Please fill in the ${field.name} field.`);
+                    element.focus();
+                    return false;
+                }
+            }
+
+            // Validate email if provided
+            const email = document.getElementById('contact-email').value.trim();
+            if (email && !isValidEmail(email)) {
+                alert('Please enter a valid email address.');
+                document.getElementById('contact-email').focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function collectFormData() {
+            return {
+                scam_type: document.getElementById('scam-type').value,
+                platform: document.getElementById('platform').value,
+                content_url: document.getElementById('content-url').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                additional_info: document.getElementById('additional-info').value.trim(),
+                contact_email: document.getElementById('contact-email').value.trim(),
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        function setSubmittingState(submitting) {
+            isSubmitting = submitting;
+            const button = document.getElementById('submit-button');
+            const form = document.getElementById('report-form');
+            
+            if (submitting) {
+                button.disabled = true;
+                button.innerHTML = '<div class="spinner"></div> Submitting Report...';
+                form.style.opacity = '0.7';
+            } else {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-flag"></i> Submit Report';
+                form.style.opacity = '1';
+            }
+        }
+
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('success-message');
+            successMessage.classList.add('show');
+            
+            // Scroll to top to show the success message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Hide success message after 10 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 10000);
+        }
+
+        function resetForm() {
+            const form = document.getElementById('report-form');
+            form.reset();
+            
+            // Reset form styling
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.style.borderColor = '#e9ecef';
+            });
+        }
+    </script>
+</body>
+</html>

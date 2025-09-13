@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satya - Verify Before You Trust</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">Satya</a>
+            <a href="https://chrome.google.com/webstore" class="cta-button" target="_blank">
+                <i class="fab fa-chrome"></i>
+                Download Extension
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <h1 class="hero-title">Verify Before You Trust</h1>
+            <p class="hero-subtitle">Uncover Scams with a Single Click</p>
+        </section>
+
+        <div class="input-selector">
+            <button class="selector-btn active" data-type="text">
+                <i class="fas fa-font"></i> Text
+            </button>
+            <button class="selector-btn" data-type="image">
+                <i class="fas fa-image"></i> Image
+            </button>
+            <button class="selector-btn" data-type="video">
+                <i class="fas fa-video"></i> Video
+            </button>
+        </div>
+
+        <div class="input-container">
+            <div class="input-area active" id="text-input">
+                <textarea placeholder="Paste the suspicious text or message here..." id="text-content"></textarea>
+            </div>
+
+            <div class="input-area" id="image-input">
+                <div class="file-upload-area" onclick="document.getElementById('image-file').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">Click to Upload or Drag & Drop</div>
+                    <div class="upload-subtext">Supports JPG, PNG, GIF files</div>
+                </div>
+                <input type="file" id="image-file" class="file-input" accept=".jpg,.jpeg,.png,.gif">
+            </div>
+
+            <div class="input-area" id="video-input">
+                <div class="file-upload-area" onclick="document.getElementById('video-file').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="upload-text">Click to Upload or Drag & Drop</div>
+                    <div class="upload-subtext">Supports MP4, AVI, MOV files</div>
+                </div>
+                <input type="file" id="video-file" class="file-input" accept=".mp4,.avi,.mov,.wmv">
+            </div>
+        </div>
+
+        <button class="action-button" id="check-button">
+            <i class="fas fa-shield-alt"></i>
+            Check with Satya
+        </button>
+    </main>
+
+    <!-- Result Modal -->
+    <div class="modal" id="result-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="result-title">Result</h3>
+                <button class="close-button" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div class="verdict" id="result-verdict">
+                <!-- Verdict will be inserted here -->
+            </div>
+
+            <div class="confidence-score">
+                <div class="confidence-level" id="confidence-level">
+                    <!-- Confidence level text will be inserted here -->
+                </div>
+            </div>
+
+            <div class="explanation" id="result-explanation">
+                <!-- Explanation text will be inserted here -->
+            </div>
+
+            <div class="reference-urls" id="reference-urls">
+                <h4>References:</h4>
+                <ul>
+                    <!-- Reference URLs will be inserted here -->
+                </ul>
+            </div>
+
+            <button class="report-button" onclick="window.location.href='report'">
+                <i class="fas fa-flag"></i>
+                Report this Content
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-credit">
+                Designed & Developed by <a href="https://kodovers.vercel.app/" target="_blank">KODOVERS</a>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    
+</body>
+</html>
