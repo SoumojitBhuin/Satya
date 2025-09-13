@@ -9,7 +9,8 @@ from datetime import datetime
 from PIL import Image
 import google.generativeai as genai
 from supabase_client import insert_report
-
+import io
+from send_reports import fetch_and_send_reports
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
@@ -115,11 +116,9 @@ def submit_report():
             'timestamp': datetime.utcnow().isoformat(),
             'status': 'received'
         }
-        print(report_data,"\n")
-        inserted = insert_report(report_data)
-        print(inserted)
+        
         # Log the report (in production, save to database)
-        app.logger.info(f"New scam report received: {json.dumps(report_data, indent=2)}")
+        print(f"New scam report received: {json.dumps(report_data, indent=2)}")
         
         return jsonify({
             'success': True,
@@ -141,24 +140,24 @@ def analyze_content(content_type, content_data):
         return analyze_text(content_data)
     
     elif content_type == 'image':
-        # Extract format from base64 header e.g. "data:image/jpeg;base64,..."
-        if content_data.startswith("data:image/"):
-            header, encoded = content_data.split(",", 1)
-            extension = header.split("/")[1].split(";")[0]  # jpeg / png / jpg
-        else:
-            encoded = content_data
-            extension = "jpg"  # default fallback
+        try:
+            # Decode the base64 string
+            if content_data.startswith("data:image/"):
+                _, encoded = content_data.split(",", 1)
+            else:
+                encoded = content_data
+            
+            image_bytes = base64.b64decode(encoded)
+            
+            # Process the image in-memory
+            image = Image.open(io.BytesIO(image_bytes))
+            
+            # Pass the PIL Image object directly to the analysis function
+            return analyze_image(image)
+        except Exception as e:
+            print(f"Error processing image data: {e}")
+            return {'error': 'Invalid or corrupt image data'}
 
-        # Decoding base64 to bytes
-        image_bytes = base64.b64decode(encoded)
-
-        # Saving with proper extension
-        file_name = f"uploaded_image.{extension}"
-        file_path = os.path.join("image_upload", file_name)
-        with open(file_path, "wb") as f:
-            f.write(image_bytes)
-        return analyze_image(content_data)
-    
     elif content_type == 'video':
         return analyze_video(content_data)
     else:
@@ -282,10 +281,8 @@ def analyze_image(image_data):
     detailed explanation (3–5 paragraphs) about the reasoning, 
     evidence, and context for your decision.
     """
-    img = Image.open(r"C:\Users\soumo\.vscode\Kodovers\satya\satya_actual\image_upload\uploaded_image.jpeg")
-
     # Call Gemini API
-    response = model.generate_content([prompt,img])
+    response = model.generate_content([prompt,image_data])
 
     raw_output = response.text
 
@@ -379,24 +376,50 @@ def not_found(e):
 def internal_error(e):
     return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/api/send-digest', methods=['POST'])
+def send_digest_email():
+    """
+    An API endpoint to be triggered by a Vercel Cron Job.
+    Uses the email_utils module to fetch and send reports.
+    """
+    # Simple security check to ensure the request is from Vercel's cron or a trusted source
+    auth_header = request.headers.get('Authorization')
+    expected_token = f"Bearer {os.getenv('CRON_SECRET')}"
+
+    if not os.getenv('CRON_SECRET') or auth_header != expected_token:
+        print("Unauthorized attempt to access /api/send-digest")
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        success, message = fetch_and_send_reports()
+        if success:
+            return jsonify({'success': True, 'message': message})
+        else:
+            # If the utility function failed, it's an internal error
+            return jsonify({'error': 'Internal server error', 'message': message}), 500
+
+    except Exception as e:
+        print(f"An unexpected error occurred in send_digest_email endpoint: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 if __name__ == '__main__':
-    # Create logs directory if it doesn't exist
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
+    # # Create logs directory if it doesn't exist
+    # if not os.path.exists('logs'):
+    #     os.makedirs('logs')
     
-    # Configure logging
-    import logging
-    from logging.handlers import RotatingFileHandler
+    # # Configure logging
+    # import logging
+    # from logging.handlers import RotatingFileHandler
     
-    if not app.debug:
-        file_handler = RotatingFileHandler('logs/satya.log', maxBytes=10240, backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('Satya application startup')
+    # if not app.debug:
+    #     file_handler = RotatingFileHandler('logs/satya.log', maxBytes=10240, backupCount=10)
+    #     file_handler.setFormatter(logging.Formatter(
+    #         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    #     ))
+    #     file_handler.setLevel(logging.INFO)
+    #     app.logger.addHandler(file_handler)
+    #     app.logger.setLevel(logging.INFO)
+    #     app.logger.info('Satya application startup')
     
     # Run the application
     app.run(debug=True, host='0.0.0.0', port=5000)
