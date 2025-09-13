@@ -119,10 +119,11 @@ def submit_report():
         
         # Log the report (in production, save to database)
         print(f"New scam report received: {json.dumps(report_data, indent=2)}")
-        if not saved_report:
-            return jsonify({'error': 'Failed to save report'}), 500
         
         saved_report = insert_report(report_data)
+        
+        if not saved_report:
+            return jsonify({'error': 'Failed to save report'}), 500
         
         return jsonify({
             'success': True,
