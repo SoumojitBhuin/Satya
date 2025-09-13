@@ -1,7 +1,7 @@
-
 // Global variables
 let currentType = 'text';
 let isLoading = false;
+let analysisResult = null; // Store the latest result for the report button
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -19,14 +19,48 @@ function initializeEventListeners() {
     // Check button
     document.getElementById('check-button').addEventListener('click', handleVerification);
 
-    // Modal close events
-    document.getElementById('result-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'result-modal') closeModal();
-    });
+    // --- FIX STARTS HERE ---
+    // Modal close events - with a safety check
+    const modal = document.getElementById('result-modal');
+    
+    // Only add listeners if the modal element actually exists
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            // Close if clicking on the background overlay
+            if (e.target.id === 'result-modal') closeModal();
+        });
+        // Find the close button inside the modal and add listener
+        const closeButton = modal.querySelector('.close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', closeModal);
+        }
+
+        // Report button logic
+        const reportButton = modal.querySelector('.report-button');
+        if (reportButton) {
+            reportButton.addEventListener('click', () => {
+                // Use the stored analysis result to pass the detailed explanation to the report page
+                const explanation = analysisResult ? encodeURIComponent(analysisResult.detailed_explanation) : "";
+                window.location.href = `/report?explanation=${explanation}`;
+            });
+        }
+    } else {
+        console.error("Error: The result modal was not found in the HTML.");
+    }
+    // --- FIX ENDS HERE ---
+
 
     // Keyboard events
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
+    });
+
+    // Report button logic
+    const reportButton = modal.querySelector('.report-button');
+    reportButton.addEventListener('click', () => {
+        // Use the stored analysis result to pass the detailed explanation to the report page
+        const explanation = analysisResult ? encodeURIComponent(analysisResult.detailed_explanation) : "";
+        window.location.href = `/report?explanation=${explanation}`;
     });
 }
 
@@ -108,27 +142,29 @@ async function handleVerification() {
     try {
         const response = await fetch('/verify', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // This will catch HTTP errors like 500, 404 etc.
+            throw new Error(`The server responded with an error: ${response.status}`);
         }
 
         const result = await response.json();
+        analysisResult = result; // Store the successful result
         displayResult(result);
+
     } catch (error) {
-        console.error('Error:', error);
-        // Simulate a response for demo purposes
-        const mockResult = {
-            is_scam: Math.random() > 0.5,
-            confidence_score: Math.floor(Math.random() * 40) + 60,
-            explanation: generateMockExplanation(currentType)
+        console.error('Verification Error:', error);
+        // **FIX**: Show a user-friendly error in the modal instead of crashing
+        const errorResult = {
+            verdict: 'Error',
+            explanation: 'An unexpected error occurred. Could not connect to the verification service. Please try again later.',
+            detailed_explanation: 'There was a network or server error. Check the browser console for more details.'
         };
-        displayResult(mockResult);
+        analysisResult = errorResult; // Store the error result
+        displayResult(errorResult);
     } finally {
         setLoadingState(false);
     }
@@ -148,10 +184,8 @@ async function prepareData() {
             return { type: 'image', data: imageBase64 };
         
         case 'video':
-            const videoFile = document.getElementById('video-file').files[0];
-            if (!videoFile) return null;
-            const videoBase64 = await fileToBase64(videoFile);
-            return { type: 'video', data: videoBase64 };
+            alert("Video verification is not supported in this version.");
+            return null;
         
         default:
             return null;
@@ -165,32 +199,6 @@ function fileToBase64(file) {
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
-}
-
-function generateMockExplanation(type) {
-    const explanations = {
-        text: [
-            "This message contains phrasing commonly used in phishing scams.",
-            "The text appears legitimate and doesn't match known scam patterns.",
-            "Multiple red flags detected including urgency language and suspicious links.",
-            "This content is likely safe based on our analysis."
-        ],
-        image: [
-            "This image contains text patterns associated with fraudulent advertisements.",
-            "The image appears to be a legitimate screenshot or photo.",
-            "Visual elements suggest this could be a fake certificate or document.",
-            "No suspicious visual indicators detected in this image."
-        ],
-        video: [
-            "This video content shows characteristics of deceptive media manipulation.",
-            "The video appears authentic with no signs of malicious content.",
-            "Audio analysis detected suspicious claims commonly used in scams.",
-            "This video content appears to be legitimate and safe."
-        ]
-    };
-    
-    const typeExplanations = explanations[type] || explanations.text;
-    return typeExplanations[Math.floor(Math.random() * typeExplanations.length)];
 }
 
 function setLoadingState(loading) {
@@ -214,46 +222,40 @@ function displayResult(result) {
     const explanationEl = document.getElementById('result-explanation');
     const referenceUrlsEl = document.getElementById('reference-urls').querySelector('ul');
 
-    // Set title
     title.textContent = 'Analysis Result';
 
-    // Set verdict and styling
-    verdictEl.textContent = `Verdict: ${result.verdict}`;
-    if (result.verdict.toLowerCase() === 'scam') {
-        verdictEl.className = 'verdict scam';
-    } else {
-        verdictEl.className = 'verdict genuine';
-    }
+    // **FIX**: Safely access properties to prevent crashes
+    const verdict = result.verdict || 'N/A';
+    const confidence = result.confidence_score || 'unknown';
+    
+    verdictEl.textContent = `Verdict: ${verdict}`;
+    verdictEl.className = 'verdict'; // Reset classes
+    verdictEl.classList.add(verdict.toLowerCase());
 
-    // Set confidence score
-    confidenceLevelEl.textContent = `Confidence Score: ${result.confidence_score}`;
-    confidenceLevelEl.className = `confidence-level ${result.confidence_score.toLowerCase()}`;
+    confidenceLevelEl.textContent = `Confidence: ${confidence}`;
+    confidenceLevelEl.className = 'confidence-level'; // Reset classes
+    confidenceLevelEl.classList.add(confidence.toLowerCase());
 
+    explanationEl.textContent = result.explanation || 'No explanation available.';
 
-    // Set explanation
-    explanationEl.textContent = result.explanation;
-
-    // Clear previous reference URLs
     referenceUrlsEl.innerHTML = '';
+    const referenceContainer = document.getElementById('reference-urls');
 
-    // Set reference URLs
     if (result.reference_urls && result.reference_urls.length > 0) {
         result.reference_urls.forEach(url => {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
             link.href = url;
             link.textContent = url;
-            link.target = '_blank'; // Open in a new tab
+            link.target = '_blank';
             listItem.appendChild(link);
             referenceUrlsEl.appendChild(listItem);
         });
-        document.getElementById('reference-urls').style.display = 'block';
+        referenceContainer.style.display = 'block';
     } else {
-        document.getElementById('reference-urls').style.display = 'none';
+        referenceContainer.style.display = 'none';
     }
 
-
-    // Show modal
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
@@ -263,3 +265,5 @@ function closeModal() {
     modal.classList.remove('show');
     document.body.style.overflow = 'auto';
 }
+
+
