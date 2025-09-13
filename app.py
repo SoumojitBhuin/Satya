@@ -12,9 +12,13 @@ from supabase_client import insert_report
 import io
 from send_reports import fetch_and_send_reports
 
-app = Flask(__name__,
-            static_folder='static',
-            template_folder='templates')
+base_dir = os.path.abspath(os.path.dirname(__file__))
+# Initialize Flask App
+app = Flask(
+    __name__,
+    static_folder=os.path.join(base_dir, 'static'),
+    template_folder=os.path.join(base_dir, 'templates')
+)
 CORS(app)  # Enable CORS for all routes
 
 # Configuration
