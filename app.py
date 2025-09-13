@@ -11,7 +11,10 @@ import google.generativeai as genai
 from supabase_client import insert_report
 import io
 from send_reports import fetch_and_send_reports
-app = Flask(__name__)
+
+app = Flask(__name__,
+            static_folder='static',
+            template_folder='templates')
 CORS(app)  # Enable CORS for all routes
 
 # Configuration
