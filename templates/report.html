@@ -3,12 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Scam - Satya</title>
+    <title>Satya - Report Scam</title>
+    
+    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
+    <!-- Font Awesome (for Chrome icon & social links) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- LIQUID GLASS UI STYLES (CORRECTED) --- */
+        :root {
+            --primary-color: #3B82F6; 
+            --primary-dark: #2563EB;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+            --warning-color: #F59E0B;
+            --surface-color: rgba(255, 255, 255, 0.35);
+            --background-color: #F3F4F6;
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --border-color: rgba(255, 255, 255, 0.6);
+            --shadow-md: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,89 +40,144 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F8F9FA;
-            color: #212529;
-            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            background: #EFF3F8;
+            position: relative;
         }
+
+        /* --- BACKGROUND GLOW / LIQUID GLASS EFFECT START --- */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.6;
+            will-change: transform;
+        }
+        .blob1 {
+            width: 450px; height: 450px; background: #A78BFA;
+            top: -150px; left: -200px;
+            animation: moveBlob1 25s infinite alternate ease-in-out;
+        }
+        .blob2 {
+            width: 500px; height: 500px; background: #60A5FA;
+            bottom: -200px; right: -250px;
+            animation: moveBlob2 30s infinite alternate ease-in-out;
+        }
+        .blob3 {
+            width: 400px; height: 400px; background: #50E3C2;
+            bottom: 50%; right: 50%;
+            transform: translate(50%, 50%);
+            animation: moveBlob3 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveBlob1 {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 50px) scale(1.1); }
+        }
+        @keyframes moveBlob2 {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(-80px, -60px) scale(1.2); }
+        }
+        @keyframes moveBlob3 {
+            from { transform: translate(50%, 50%) scale(1); }
+            to { transform: translate(calc(50% + 50px), calc(50% - 50px)) scale(0.9); }
+        }
+        /* --- BACKGROUND GLOW / LIQUID GLASS EFFECT END --- */
 
         /* Header Styles */
         header {
-            position: sticky;
+            position: fixed;
             top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #e9ecef;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-color);
             z-index: 1000;
             padding: 1rem 0;
         }
 
         .header-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #007BFF;
+            color: var(--text-primary);
             text-decoration: none;
-            background: linear-gradient(135deg, #007BFF, #0056CC);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .nav-link {
-            color: #6c757d;
+            color: var(--text-primary);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
         .nav-link:hover {
-            color: #007BFF;
+            color: var(--primary-color);
         }
 
         /* Main Content */
         main {
-            max-width: 600px;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 4rem 2rem 2rem;
+            padding: 6rem 1.5rem 3rem; 
         }
 
         .page-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
 
         .page-title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #212529, #495057);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .page-subtitle {
             font-size: 1.1rem;
-            color: #6c757d;
-            margin-bottom: 2rem;
+            color: var(--text-secondary);
         }
 
         /* Form Styles */
         .report-form {
-            background: white;
-            border-radius: 20px;
+            background: var(--surface-color);
+            border-radius: var(--border-radius-lg);
             padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e9ecef;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .form-group {
@@ -109,7 +188,7 @@
             display: block;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            color: #495057;
+            color: var(--text-primary);
         }
 
         .form-input,
@@ -117,20 +196,26 @@
         .form-textarea {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
+            border-radius: var(--border-radius-md);
             font-family: inherit;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.2s ease;
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--text-primary);
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: #6B7280;
         }
 
         .form-input:focus,
         .form-select:focus,
         .form-textarea:focus {
             outline: none;
-            border-color: #007BFF;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            background-color: rgba(255, 255, 255, 0.6);
         }
 
         .form-textarea {
@@ -143,70 +228,160 @@
         }
 
         .required {
-            color: #DC3545;
+            color: var(--error-color);
         }
+
+       .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+        }
+
+        /* The visible part of the dropdown */
+        .custom-select-trigger {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-select-trigger::after {
+            content: '';
+            display: inline-block;
+            width: 1.2em;
+            height: 1.2em;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23495057' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .custom-select-wrapper.open .custom-select-trigger {
+            border-color: rgba(0, 123, 255, 0.5);
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+        }
+
+        .custom-select-wrapper.open .custom-select-trigger::after {
+            transform: rotate(180deg);
+        }
+
+        /* The glass options panel */
+        .custom-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .custom-select-wrapper.open .custom-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Individual options */
+        .custom-option {
+            padding: 0.85rem 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .custom-option:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .custom-option.selected {
+            background-color: rgba(0, 123, 255, 0.2);
+            font-weight: 500;
+        }
+
 
         .form-help {
             font-size: 0.875rem;
-            color: #6c757d;
+            color: var(--text-secondary);
             margin-top: 0.25rem;
         }
 
         /* Submit Button */
         .submit-button {
             width: 100%;
-            background: linear-gradient(135deg, #DC3545, #C82333);
+            background: var(--error-color);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+            font-size: 1.05rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            margin-top: 2rem;
+            margin-top: 1rem;
         }
 
         .submit-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
 
         .submit-button:disabled {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .spinner {
             width: 20px;
             height: 20px;
-            border: 2px solid #ffffff;
-            border-top: 2px solid transparent;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #ffffff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Success Message */
         .success-message {
             display: none;
-            background: linear-gradient(135deg, #28A745, #20873A);
+            background: rgba(16, 185, 129, 0.8);
+            backdrop-filter: blur(10px);
             color: white;
             padding: 1.5rem;
-            border-radius: 15px;
+            border-radius: var(--border-radius-lg);
             text-align: center;
             margin-bottom: 2rem;
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .success-message.show {
@@ -229,72 +404,39 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
         }
-
+        
         /* Footer */
         footer {
-            background: white;
             padding: 2rem 0;
-            margin-top: 4rem;
-            border-top: 1px solid #e9ecef;
+            margin-top: 3rem;
+            text-align: center;
+            background: transparent;
         }
-
+        
         .footer-content {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
         }
+        
+        .footer-credit { color: var(--text-secondary); font-size: 0.9rem; }
+        .footer-credit a { color: var(--primary-color); text-decoration: none; }
+        .footer-credit a:hover { text-decoration: underline; }
 
-        .footer-credit {
-            color: #6c757d;
-        }
+        .social-links { display: flex; gap: 1.5rem; justify-content: center; margin-top: 1rem;}
+        .social-link { color: var(--text-secondary); font-size: 1.3rem; transition: color 0.2s ease; }
+        .social-link:hover { color: var(--primary-color); }
 
-        .footer-credit a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-link {
-            color: #6c757d;
-            font-size: 1.2rem;
-            transition: color 0.3s ease;
-        }
-
-        .social-link:hover {
-            color: #007BFF;
-        }
-
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            .header-container {
-                padding: 0 1rem;
-            }
-
-            .logo {
-                font-size: 1.5rem;
-            }
-
-            main {
-                padding: 2rem 1rem;
-            }
-
-            .page-title {
-                font-size: 2rem;
-            }
-
-            .report-form {
-                padding: 1.5rem;
-            }
-
+            .page-title { font-size: 2rem; }
+            main { padding: 5.5rem 1rem 2rem; }
+            .report-form { padding: 1.5rem; }
             .footer-content {
                 flex-direction: column;
                 text-align: center;
@@ -303,6 +445,12 @@
     </style>
 </head>
 <body>
+    <div class="background-container">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+    </div>
+
     <header>
         <div class="header-container">
             <a href="/" class="logo">Satya</a>
@@ -389,7 +537,7 @@
                 <label for="additional-info" class="form-label">
                     Additional Information
                 </label>
-                <textarea id="additional-info" class="form-textarea" placeholder="Any other relevant details, such as phone numbers, email addresses, or specific tactics used...">{{detailed_explanation}}</textarea>
+                <textarea id="additional-info" class="form-textarea" placeholder="Any other relevant details, such as phone numbers, email addresses, or specific tactics used..."></textarea>
                 <div class="form-help">Include any other relevant information that might help identify patterns</div>
             </div>
 
@@ -411,18 +559,12 @@
     <footer>
         <div class="footer-content">
             <div class="footer-credit">
-                Designed & Developed by <a href="#" target="_blank">Your Name</a>
+                Designed & Developed by <a href="https://kodovers.vercel.app/" target="_blank">KODOVERS</a>
             </div>
             <div class="social-links">
-                <a href="#" class="social-link" target="_blank" title="GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="#" class="social-link" target="_blank" title="LinkedIn">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a href="#" class="social-link" target="_blank" title="Twitter">
-                    <i class="fab fa-twitter"></i>
-                </a>
+                <a href="#" class="social-link" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="social-link" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
             </div>
         </div>
     </footer>
@@ -432,12 +574,99 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeForm();
+            initializeCustomSelects(); // Initialize the custom dropdowns
         });
 
         function initializeForm() {
             const form = document.getElementById('report-form');
             form.addEventListener('submit', handleFormSubmit);
         }
+
+        // --- NEW SCRIPT FOR CUSTOM DROPDOWN ---
+        function initializeCustomSelects() {
+            const selectElements = document.querySelectorAll('select.form-select');
+
+            selectElements.forEach(selectElement => {
+                // Avoid re-initializing if script runs multiple times
+                if (selectElement.hasAttribute('data-custom-select-initialized')) return;
+                selectElement.setAttribute('data-custom-select-initialized', 'true');
+
+                const customWrapper = document.createElement('div');
+                customWrapper.className = 'custom-select-wrapper';
+
+                const customTrigger = document.createElement('div');
+                customTrigger.className = 'custom-select-trigger';
+
+                const customOptions = document.createElement('div');
+                customOptions.className = 'custom-options';
+
+                // Set initial trigger text from placeholder
+                customTrigger.textContent = selectElement.options[0].textContent;
+
+                // Create custom options from original <option> tags
+                for (const option of selectElement.options) {
+                    if (option.value === "") continue; // Skip the placeholder option
+
+                    const customOption = document.createElement('div');
+                    customOption.className = 'custom-option';
+                    customOption.textContent = option.textContent;
+                    customOption.dataset.value = option.value;
+                    
+                    if (option.selected && option.value !== "") {
+                        customTrigger.textContent = option.textContent;
+                        customOption.classList.add('selected');
+                    }
+
+                    customOption.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent click from bubbling up to the window
+                        
+                        // Remove 'selected' from previous option
+                        const prevSelected = customOptions.querySelector('.selected');
+                        if (prevSelected) {
+                            prevSelected.classList.remove('selected');
+                        }
+                        
+                        // Select the new option
+                        customOption.classList.add('selected');
+                        customTrigger.textContent = customOption.textContent;
+                        selectElement.value = customOption.dataset.value;
+                        selectElement.dispatchEvent(new Event('change')); // Trigger change for validation
+
+                        customWrapper.classList.remove('open'); // Close the dropdown
+                    });
+
+                    customOptions.appendChild(customOption);
+                }
+
+                customTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close any other open dropdowns first
+                    document.querySelectorAll('.custom-select-wrapper.open').forEach(openWrapper => {
+                        if (openWrapper !== customWrapper) {
+                            openWrapper.classList.remove('open');
+                        }
+                    });
+                    // Toggle the current dropdown
+                    customWrapper.classList.toggle('open');
+                });
+
+                customWrapper.appendChild(customTrigger);
+                customWrapper.appendChild(customOptions);
+                
+                // Replace the original select element with our custom one
+                selectElement.parentNode.insertBefore(customWrapper, selectElement);
+                selectElement.style.display = 'none'; // Hide the original
+            });
+
+            // Add a global click listener to close dropdowns when clicking outside
+            window.addEventListener('click', function() {
+                document.querySelectorAll('.custom-select-wrapper.open').forEach(wrapper => {
+                     wrapper.classList.remove('open');
+                });
+            });
+        }
+        // --- END OF CUSTOM DROPDOWN SCRIPT ---
+
 
         async function handleFormSubmit(e) {
             e.preventDefault();
@@ -455,7 +684,7 @@
                 // Simulate API call
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 
-                // In a real application, you would make an API call here:
+                // In a real application, you would make an API call here.
                 
                 const response = await fetch('/api/report', {
                     method: 'POST',
@@ -492,6 +721,13 @@
                 if (!element.value.trim()) {
                     alert(`Please fill in the ${field.name} field.`);
                     element.focus();
+                    // If it's a custom select, we can't focus the original.
+                    // Instead, we could add a visual indicator.
+                    const customSelect = element.previousElementSibling;
+                    if (customSelect && customSelect.classList.contains('custom-select-wrapper')) {
+                        customSelect.querySelector('.custom-select-trigger').focus();
+                        customSelect.classList.add('open');
+                    }
                     return false;
                 }
             }
@@ -557,12 +793,20 @@
             const form = document.getElementById('report-form');
             form.reset();
             
-            // Reset form styling
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.style.borderColor = '#e9ecef';
+            // Manually reset the text on our custom dropdowns
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                const originalSelect = wrapper.nextElementSibling;
+                if(trigger && originalSelect && originalSelect.options.length > 0) {
+                    trigger.textContent = originalSelect.options[0].textContent;
+                }
+                const selectedOption = wrapper.querySelector('.custom-option.selected');
+                if(selectedOption) {
+                    selectedOption.classList.remove('selected');
+                }
             });
         }
     </script>
 </body>
 </html>
+
