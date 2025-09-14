@@ -388,7 +388,7 @@ def not_found(e):
 def internal_error(e):
     return jsonify({'error': 'Internal server error'}), 500
 
-@app.route('/api/send-digest', methods=['POST'])
+@app.route('/api/send-digest', methods=['POST','GET'])
 def send_digest_email():
     """
     An API endpoint to be triggered by a Vercel Cron Job.
