@@ -8,6 +8,10 @@ import json
 from datetime import datetime
 from PIL import Image
 import google.generativeai as genai
+from google.generativeai.types import Tool
+from google.generativeai import types
+from google import genai
+from google.genai import types
 from supabase_client import insert_report
 import io
 from send_reports import fetch_and_send_reports
@@ -25,10 +29,10 @@ CORS(app)  # Enable CORS for all routes
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # Configure Gemini API
-genai.configure(api_key= os.getenv("MY_API_KEY"))
+client = genai.Client(api_key= os.getenv("MY_API_KEY"))
 
 # Define the model
-model = genai.GenerativeModel("gemini-2.0-flash")
+
 
 #defining global variable
 explanation_detailed = ""
@@ -209,7 +213,7 @@ def analyze_text(text_content):
     {{
       "confidence_score": "<authentic | misleading | false>",
       "verdict": "<Scam | Genuine>",
-      "explanation": "<Simple and precise well framed reasoning for the conclusion based on the scam indicators found and web search results. Explaim what the input truly means.>",
+      "explanation": "This section will provide a detailed, educational narrative based on a comprehensive analysis. My process is as follows: First, I will identify the central claim or message presented in the input. I will then extract key entities such as names of individuals, places, organizations, and specific events mentioned. Using this information, I will perform a web search, prioritizing reputable news sources, academic reports, and official statements to gather factual evidence and context. The explanation will not merely state a conclusion but will synthesize these findings to tell the full story. This includes providing relevant background information, clarifying any complex nuances, and explaining the significance of the event in its broader context. The goal is to deliver a well-rounded, informative summary that fully educates you on the topic.",
       "title":"use 3 to 4 words to explain the input text for google search"
     }}
     ______
@@ -219,8 +223,19 @@ def analyze_text(text_content):
     evidence, and context for your decision.
     """
 
+    
     # Call Gemini API
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+    model='gemini-2.0-flash',  # or whatever model you're using
+    contents=prompt,
+    config=types.GenerateContentConfig(
+        tools=[ 
+            types.Tool(
+                google_search=types.GoogleSearch()
+            )
+        ]
+    )
+)
 
     raw_output = response.text
 
@@ -259,42 +274,73 @@ def analyze_image(image_data):
     #defining global varaible
     global explanation_detailed
     
+    image_description_prompt = """
+    Analyze the attached image. Extract all visible text exactly as it appears. 
+    Then, provide a concise, one-paragraph summary of the image's primary message, offer, or call to action.
+    """
+    # Calling the Gemini API to get the image's textual content
+    description_response = client.models.generate_content(
+    model='gemini-2.0-flash',  # or whatever model you're using
+    contents=[image_description_prompt,image_data],
+    config=types.GenerateContentConfig(
+        tools=[ 
+            types.Tool(
+                google_search=types.GoogleSearch()
+            )
+        ]
+    )
+)
+    
+    # Storing the extracted text for the next step
+    extracted_text = description_response.text
+    print(f"Extracted Text:\n---\n{extracted_text}\n---")
+    
     # Scam verification prompt
-    prompt = """
-    You are a sophisticated scam identification AI designed to provide structured JSON output.
-    Your task is to analyze the contents of the provided image for scam indicators, search the web
-    for corroborating evidence, and return your findings in a precise JSON format.
+    prompt = f"""
+    You are a sophisticated scam identification AI designed to provide structured JSON output. 
+    Your task is to analyze text for scam indicators, search the web for corroborating evidence, 
+    and return your findings in a precise JSON format.
 
-    Analyze the image for common scam indicators, including but not limited to:
+    **Analyze the provided text for common scam indicators, including but not limited to:**
     * Urgency or Threats: "Act now," "your account will be suspended."
     * Unsolicited Prizes/Offers: "You've won a lottery," "unclaimed inheritance."
-    * Suspicious Links/Requests: Mismatched URLs, requests for unusual actions.
-    * Requests for Personal/Financial Information: Asking for passwords, bank details.
-    * Unusual Payment Methods: Demands for payment via gift cards, wire transfers, or crypto.
-    * Poor Grammar, Spelling, and Unprofessional Design.
+    * Suspicious Links/Requests: Mismatched URLs, requests for downloads, or remote access.
+    * Requests for Personal/Financial Information: Asking for passwords, SSN, or bank details.
+    * Unusual Payment Methods: Demands for payment via gift cards, wire transfers, or cryptocurrency.
+    * Poor Grammar and Spelling: Unprofessional language and obvious errors.
+    
+    After analyzing the text and performing a web search for related known scams, 
+    you must provide your conclusion in the following strict JSON format. 
+    Do not include any text or formatting outside of this JSON object.
 
-    After analyzing the image and performing a web search for related known scams, you must provide
-    your conclusion in the following strict JSON format, followed by a detailed explanation.
-    Do not include any text or formatting before the JSON object.
-    
-    give the verdict based on the context of the image, what actually is it trying to convey and not based on what the image is. Try to fetch name of any notable person, monument, incident, or text that is being displayed in the image.
-    
+    **Input Text:**
+    {extracted_text}
 
     **Output (JSON):**
     {{
       "confidence_score": "<authentic | misleading | false>",
       "verdict": "<Scam | Genuine>",
-      "explanation": "<Simple and precise well framed reasoning for the conclusion based on the scam indicators found and web search results. Explaim what the input truly means. Fetch the latest related news from the web>",
-      "title":"use 3 to 4 words to explain the input text for google search based on the explanation. Dont forget to add the most important keywords for search."
+      "explanation": "This section will provide a detailed, educational narrative based on a comprehensive analysis. My process is as follows: First, I will identify the central claim or message presented in the input. I will then extract key entities such as names of individuals, places, organizations, and specific events mentioned. Using this information, I will perform a web search, prioritizing reputable news sources, academic reports, and official statements to gather factual evidence and context. The explanation will not merely state a conclusion but will synthesize these findings to tell the full story. This includes providing relevant background information, clarifying any complex nuances, and explaining the significance of the event in its broader context. The goal is to deliver a well-rounded, informative summary that fully educates you on the topic.",
+      "title":"use 3 to 4 words to explain the input text for google search"
     }}
-    ---
+    ______
     Additionally, after providing the JSON response, include a 
     section titled "DETAILED EXPLANATION:" followed by a longer 
     detailed explanation (3–5 paragraphs) about the reasoning, 
     evidence, and context for your decision.
     """
     # Call Gemini API
-    response = model.generate_content([prompt,image_data])
+    response = client.models.generate_content(
+    model='gemini-2.0-flash',  # or whatever model you're using
+    contents=prompt,
+    config=types.GenerateContentConfig(
+        tools=[ 
+            types.Tool(
+                google_search=types.GoogleSearch()
+            )
+        ]
+    )
+)
 
     raw_output = response.text
 
@@ -316,8 +362,6 @@ def analyze_image(image_data):
         search_engine_id=MY_SEARCH_ENGINE_ID,
         num_results=3
     )
-    
-    print(reference_url,"\n\n")
     
     result["reference_urls"]=reference_url
     print(result,"\n\n")
