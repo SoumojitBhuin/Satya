@@ -263,7 +263,7 @@ def analyze_text(text_content):
     
     result["reference_urls"]=reference_url
     print(result,"\n\n")
-    explanation_detailed = detailed_part.strip()
+    explanation_detailed = detailed_part.strip(" ")
         
 
     return result
@@ -366,7 +366,7 @@ def analyze_image(image_data):
     result["reference_urls"]=reference_url
     print(result,"\n\n")
     
-    explanation_detailed = detailed_part.strip()
+    explanation_detailed = detailed_part.strip(" ")
     
         
 
